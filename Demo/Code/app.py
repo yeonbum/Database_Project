@@ -5,10 +5,10 @@ from email.mime.text import MIMEText
 import smtplib
 
 app = Flask(__name__)
-app.secret_key = '1234kyb'
+app.secret_key = 'your_secert_key'
 
 # Oracle DB 연결
-connection = oracledb.connect(user="d202000826", password="21-76018500KYB", dsn="localhost:1521/xeXDB")
+connection = oracledb.connect(user="your_id", password="your_pass", dsn="your_loca")
 
 # 공지사항 데이터
 notices = [
@@ -325,8 +325,8 @@ def reserve():
 # 이메일 전송 메커니즘 함수
 def send_email(to_email, subject, body):
     # 전송자 정보 하드코딩
-    from_email = "kyb8732@gmail.com"
-    from_password = "amex jdxn rtbj vnms"
+    from_email = "your_mail"
+    from_password = "your_pass"
 
     msg = MIMEText(body)
     msg['Subject'] = subject
