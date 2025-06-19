@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>FAQ - 고객센터</title>
+  <script>
+    window.onload = function() {
+      loadFaqData();
+    };
+
+    async function loadFaqData() {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);  // 현재 URL의 쿼리 스트링을 읽기
+        const keyword = urlParams.get('keyword') || '';  // URL에서 keyword 파라미터를 가져옵니다. 없으면 빈 문자열
+
+        const response = await fetch(`/get_faq?keyword=${encodeURIComponent(keyword)}`);  // FAQ 데이터를 가져올 API 엔드포인트
+        const data = await response.json();  // JSON 형태로 데이터 파싱
+
+        const faqContainer = document.getElementById('faq-container');  // FAQ를 출력할 영역
+
+        if (data.length === 0) {
+          faqContainer.innerHTML = '<p>해당 키워드를 포함한 FAQ가 없습니다.</p>';
+        } else {
+          faqContainer.innerHTML = '';  // 기존 내용 초기화
+          data.forEach(faq => {
+            // FAQ 아이템을 HTML로 만들어 추가
+            const faqItem = document.createElement('div');
+            faqItem.classList.add('faq-item');
+            faqItem.innerHTML = `
+              <div class="faq-question">Q. ${faq.question}</div>
+              <div class="faq-answer">A. ${faq.answer}</div>
+            `;
+            faqContainer.appendChild(faqItem);
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching FAQs:", error);
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f4f7;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #004080;
+      color: white;
+      padding: 15px 30px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: start;
+      background-color: #0066cc;
+      padding: 10px 20px;
+    }
+
+    .nav-buttons a {
+      padding: 10px 20px;
+      margin-right: 10px;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      background-color: #005bb5;
+    }
+
+    .nav-buttons a.active {
+      background-color: #003f80;
+      font-weight: bold;
+    }
+
+    .content-box {
+      max-width: 800px;
+      margin: 30px auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-bar {
+      display: flex;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+
+    .search-bar input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-left: 10px;
+    }
+
+    .search-bar button {
+      background-color: #004080;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      font-size: 14px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .faq-item {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .faq-question {
+      font-weight: bold;
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .faq-answer {
+      font-size: 14px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <header>고객센터</header>
+
+  <div class="nav-buttons">
+    <a href="{{ url_for('notice') }}">공지사항</a>
+    <a href="" class="active"> FAQ </a>
+    <a href="{{ url_for('dashboard') }}">뒤로가기</a>
+  </div>
+
+  <div class="content-box">
+    <!-- 검색 바 -->
+    <form class="search-bar" method="GET" action="/faq">
+      <button type="submit">찾기</button>
+      <input type="text" name="keyword" placeholder="FAQ 키워드를 입력하세요" value="{{ request.args.get('keyword', '') }}">
+    </form>
+
+    <!-- FAQ 리스트가 동적으로 삽입될 곳 -->
+    <div id="faq-container">
+      <!-- fetch로 로드된 FAQ 항목이 여기에 표시됨 -->
+    </div>
+  </div>
+
+</body>
+</html>

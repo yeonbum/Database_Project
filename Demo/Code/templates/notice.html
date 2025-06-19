@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>공지사항 - 고객센터</title>
+  <script>
+    window.onload = function() {
+      loadUserData();
+    };
+
+    async function loadUserData() {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);  // 현재 URL의 쿼리 스트링을 읽기
+        const keyword = urlParams.get('keyword') || '';  // URL에서 keyword 파라미터를 가져옵니다. 없으면 빈 문자열
+
+        const response = await fetch(`/get_notice?keyword=${encodeURIComponent(keyword)}`);  // 공지사항 데이터를 가져올 API 엔드포인트
+        const data = await response.json();  // JSON 형태로 데이터 파싱
+
+        const noticeContainer = document.getElementById('notices-container');  // 공지사항을 출력할 영역
+
+        if (data.length === 0) {
+          noticeContainer.innerHTML = '<p>공지사항이 없습니다.</p>';
+        } else {
+          noticeContainer.innerHTML = '';  // 기존 내용 초기화
+          data.forEach(notice => {
+            // 공지사항 아이템을 HTML로 만들어 추가
+            const noticeItem = document.createElement('div');
+            noticeItem.classList.add('notice-item');
+            noticeItem.innerHTML = `
+              <div class="notice-title">${notice.title}</div>
+              <div class="notice-date">${notice.date}</div>
+            `;
+            noticeContainer.appendChild(noticeItem);
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching notices:", error);
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f4f7;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #004080;
+      color: white;
+      padding: 15px 30px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: start;
+      background-color: #0066cc;
+      padding: 10px 20px;
+    }
+
+    .nav-buttons a {
+      padding: 10px 20px;
+      margin-right: 10px;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      background-color: #005bb5;
+    }
+
+    .nav-buttons a.active {
+      background-color: #003f80;
+      font-weight: bold;
+    }
+
+    .content-box {
+      max-width: 800px;
+      margin: 30px auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-bar {
+      display: flex;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+
+    .search-bar input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-left: 10px;
+    }
+
+    .search-bar button {
+      background-color: #004080;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      font-size: 14px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .notice-item {
+      padding: 15px 0;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .notice-title {
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .notice-date {
+      font-size: 13px;
+      color: gray;
+    }
+  </style>
+</head>
+<body>
+
+  <header>고객센터</header>
+
+  <div class="nav-buttons">
+    <a href="" class="active">공지사항</a>
+    <a href="{{ url_for('faq') }}"> FAQ </a>
+    <a href="{{ url_for('dashboard') }}">뒤로가기</a>
+  </div>
+
+  <div class="content-box">
+    <form class="search-bar" method="GET" action="/notice">
+      <button type="submit">찾기</button>
+      <input type="text" name="keyword" placeholder="공지 제목을 입력하세요" value="{{ request.args.get('keyword', '') }}">
+    </form>
+
+    <!-- 여기서 공지사항 항목이 동적으로 삽입됩니다 -->
+    <div id="notices-container">
+      <!-- fetch로 로드된 공지사항이 여기에 표시됨 -->
+    </div>
+  </div>
+
+</body>
+</html>

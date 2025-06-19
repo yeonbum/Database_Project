@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>CNU Airline - 회원가입</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .signup-container {
+      background-color: white;
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 350px;
+    }
+
+    .title {
+      font-size: 28px;
+      font-weight: bold;
+      color: #004080;
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    input[type="text"], input[type="password"], input[type="email"] {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    button {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #004080;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #0055aa;
+    }
+
+    .back-btn {
+      background-color: #888;
+    }
+
+    .back-btn:hover {
+      background-color: #666;
+    }
+
+    .alert {
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+  </style>
+</head>
+<body>
+  <div class="signup-container">
+    <div class="title">CNU Airline 회원가입</div>
+    
+    <!-- 플래시 메시지 표시 -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
+    <form method="post" action="/signup">
+      <div class="input-group">
+        <input type="text" placeholder="ID" name="username" required />
+        <input type="text" placeholder="이름" name="name" required />
+        <input type="password" placeholder="비밀번호" name="password" required />
+        <input type="email" placeholder="이메일" name="email" required />
+        <input type="text" placeholder="여권 번호" name="passport" required />
+      </div>
+      <div class="button-group">
+        <button type="submit">회원가입</button>
+        <button type="button" class="back-btn" onclick="location.href='/login'">뒤로가기</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

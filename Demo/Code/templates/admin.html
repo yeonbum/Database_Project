@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>CNU Airline - 관리자 화면</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6f9;
+    }
+
+    .header {
+      background-color: #004080;
+      color: white;
+      padding: 20px;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .container {
+      padding: 30px;
+    }
+
+    .customer-card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+
+    .ticket-info {
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .no-reservation {
+      background-color: white;
+      border-radius: 8px;
+      padding: 40px;
+      text-align: center;
+      font-size: 18px;
+      color: #888;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-right-top {
+    position: static;
+    background-color: #004080;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    z-index: 1000;           /* 다른 요소 위에 표시 */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transition: background-color 0.3s ease;
+    margin-right: 10px;
+  }
+
+  .btn-right-top:hover {
+    background-color: #0059b3; /* hover 효과 */
+  }
+
+  .button-wrapper{
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 30px 30px 0;
+  }
+  </style>
+</head>
+<body>
+
+  <div class="header">CNU Airline</div>
+  
+  <div class="container">
+    {% if customers %}
+      {% for customer in customers %}
+        <div class="customer-card">
+          <div class="ticket-info">
+            cno: <strong>{{ customer.cno }}</strong><br>
+            name: {{ customer.name}}<br> 
+            email: {{ customer.email }}, password: {{ customer.password }}<br>
+            passportnumber: {{ customer.passportnumber }}<br>
+            취소 횟수: {{ customer.count }} ({{ customer.rank }}등)
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="no-reservation">조회 버튼을 누르시오.</div>
+    {% endif %}
+  </div>
+  <div class="button-wrapper">
+    <form action="{{ url_for('load_customer') }}" method="post">
+      <button type="submit" class="btn-right-top">조회</button>
+    </form>
+    <form action="{{ url_for('login') }}" method="get">
+      <button type="submit" class="btn-right-top">종료하기</button>
+    </form>
+  </div>
+
+</body>
+</html>

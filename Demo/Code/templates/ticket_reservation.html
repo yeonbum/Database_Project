@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>항공권 예약 - CNU Airline</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #004080;
+      color: white;
+      padding: 15px 30px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+   .nav-buttons {
+      display: flex;
+      justify-content: start;
+      background-color: #0066cc;
+      padding: 10px 20px;
+    }
+
+    .nav-buttons a {
+      padding: 10px 20px;
+      margin-right: 10px;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      background-color: #005bb5;
+    }
+
+    .nav-buttons a.active {
+      background-color: #003f80;
+      font-weight: bold;
+    }
+
+    .form-section {
+      display: flex;
+      flex-direction: column;
+      padding: 20px 30px;
+    }
+
+    .airport-inputs, .date-class-inputs {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .airport-inputs input, .date-class-inputs input, .date-class-inputs select {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      width: 200px;
+    }
+
+    .arrow {
+      font-size: 24px;
+      color: #004080;
+    }
+
+    .result-box {
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 20px;
+      min-height: 150px;
+      text-align: center;
+      font-size: 16px;
+      color: #444;
+    }
+
+    .result-item {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    .alert {
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      background-color: #004080;
+      color: #ff3232;
+      border: 1px solid #004080;
+    }
+  </style>
+</head>
+<body>
+
+  <header>CNU Airline</header>
+
+  <nav>
+    <div class="nav-buttons">
+      <a href="{{ url_for('ticket_reservation') }}" class="active">항공권 예약</a>
+      <a href="{{ url_for('reservation_lookup') }}" class="inactive">예약 조회</a>
+      <a href="{{ url_for('dashboard') }}">뒤로가기</a>
+  </div>
+  </nav>
+
+  <div class="form-section">
+  <form class="form-section" method="get" action="/ticket_find">
+    <!-- 출발/도착 공항 입력 -->
+    <div class="airport-inputs">
+      <input type="text" name="departure" placeholder="출발 공항" required />
+      <div class="arrow">→</div>
+      <input type="text" name="arrival" placeholder="도착 공항" required/>
+    </div>
+
+    <!-- 출발 날짜 / 좌석 등급 -->
+    <div class="date-class-inputs">
+      <input type="date" name="departure_date" required/>
+      <select name="seat_class" required>
+        <option value="">좌석 등급 선택</option>
+        <option value="ECONOMY">이코노미</option>
+        <option value="BUSINESS">비즈니스</option>
+        <option value="FIRST">퍼스트</option>
+      </select>
+
+      <!-- 정렬 기준 추가 -->
+      <select name="sort_by" required>
+        <option value="">정렬 기준 선택</option>
+        <option value="time">출발 시간 순</option>
+        <option value="price">가격 순</option>
+      </select>
+
+      <button type="submit" style="padding: 10px 20px; 
+      background-color: #004080;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;">검색</button>
+    </div>
+  </form>
+    <!-- 플래시 메시지 표시 -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
+    <!-- 항공권 내역 박스 -->
+    <div class="result-box">
+      {% if tickets and tickets|length > 0 %}
+        {% for ticket in tickets %}
+          <div class="result-item">
+            {{ ticket.flight_no }} | {{ ticket.departure }} → {{ ticket.arrival }} |
+            {{ ticket.departure_time }} ~ {{ ticket.arrival_time }} |
+            {{ ticket.seat_class }} | {{ ticket.price }}원 | {{ ticket.no_seats }} 자리 남음
+
+            <form method="post" action="/reserve" style="display: inline;">
+              <input type="hidden" name="flightno" value="{{ ticket.flight_no}}">
+              <input type="hidden" name="departuredatetime" value="{{ ticket.departure_time}}">
+              <input type="hidden" name="seatclass" value="{{ ticket.seat_class}}">
+              <input type="hidden" name="payment" value="{{ ticket.price}}">
+              <input type="hidden" name="no_seats" value="{{ ticket.no_seats}}">
+              <button type="submit" style="margin-left: 10px;">예약</button>
+            </form>
+          </div>
+        {% endfor %}
+      {% else %}
+        조건에 맞는 항공권이 없습니다.
+      {% endif %}
+    </div>
+  </div>
+
+</body>
+</html>

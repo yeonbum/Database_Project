@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>CNU Airline - 예약 조회</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6f9;
+    }
+
+    .header {
+      background-color: #004080;
+      color: white;
+      padding: 20px;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: start;
+      background-color: #0066cc;
+      padding: 10px 20px;
+    }
+
+    .nav-buttons a {
+      padding: 10px 20px;
+      margin-right: 10px;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      background-color: #005bb5;
+    }
+
+    .nav-buttons a.active {
+      background-color: #003f80;
+      font-weight: bold;
+    }
+
+    .container {
+      padding: 30px;
+    }
+
+    .ticket-card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+
+    .ticket-info {
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .cancel-btn {
+      position: static;
+      bottom: 15px;
+      left: 20px;
+      background-color: #e60000;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .no-reservation {
+      background-color: white;
+      border-radius: 8px;
+      padding: 40px;
+      text-align: center;
+      font-size: 18px;
+      color: #888;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">CNU Airline</div>
+
+  <div class="nav-buttons">
+    <a href="{{ url_for('ticket_reservation') }}">항공권 예약</a>
+    <a href="{{ url_for('reservation_lookup') }}" class="active">예약 조회</a>
+    <a href="{{ url_for('dashboard') }}">뒤로가기</a>
+  </div>
+
+  <div class="container">
+    {% if reservations %}
+      {% for ticket in reservations %}
+        <div class="ticket-card">
+          <div class="ticket-info">
+            <strong>{{ ticket.airline }}</strong> - {{ ticket.flight_number }}<br>
+            {{ ticket.departure_airport }} → {{ ticket.arrival_airport }}<br>
+            {{ ticket.departure_time }} → {{ ticket.arrival_time }}<br>
+            요금: {{ ticket.fare }} (천원)
+          </div>
+          <form action="{{ url_for('cancel_reservation') }}" method="post">
+            <input type="hidden" name="flight_number" value="{{ ticket.flight_number }}">
+            <input type="hidden" name="departure_time" value="{{ ticket.departure_time }}">
+            <button type="submit" class="cancel-btn">예약 취소</button>
+          </form>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="no-reservation">예약된 항공권이 없습니다.</div>
+    {% endif %}
+  </div>
+
+</body>
+</html>

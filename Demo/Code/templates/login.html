@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CNU Airline - Login</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-container {
+      background-color: white;
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 350px;
+    }
+
+    .title {
+      font-size: 28px;
+      font-weight: bold;
+      color: #004080;
+      margin-bottom: 20px;
+    }
+
+    .airplane-img {
+      width: 120px;
+      height: auto;
+      margin-bottom: 25px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    input[type="text"], input[type="password"] {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    button {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #004080;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #0055aa;
+    }
+
+    .signup-btn {
+      background-color: #888;
+    }
+
+    .signup-btn:hover {
+      background-color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="title">CNU Airline</div>
+    <img src="static/airplane.png" alt="Airplane" class="airplane-img" />
+    <form method="post" action="/login">
+      <div class="input-group">
+        <input type="text" placeholder="ID" name="id" />
+        <input type="password" placeholder="Password" name="password" />
+      </div>
+      <div class="button-group">
+        <button type="submit">로그인</button>
+        <button type="button" class="signup-btn" onclick="location.href='/signup'">회원가입</button>
+      </div>
+    </form>
+  </div>
+
+  {% if error %}
+    <script>
+      alert("{{ error }}");
+    </script>
+  {% endif %}
+</body>
+</html>

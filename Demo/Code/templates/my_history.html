@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>나의 예약/취소 내역 - My Airline</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f7fa;
+    }
+
+    header {
+      background-color: #003366;
+      color: white;
+      padding: 20px 30px;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: start;
+      background-color: #0066cc;
+      padding: 10px 20px;
+    }
+
+    .nav-buttons a {
+      padding: 10px 20px;
+      margin-right: 10px;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      background-color: #005bb5;
+    }
+    .container {
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .history-box {
+      background-color: white;
+      width: 80%;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .date-range {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .date-range input {
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .arrow {
+      font-size: 20px;
+      color: #003366;
+    }
+
+    h2 {
+      margin-top: 30px;
+      color: #003366;
+      font-size: 20px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 8px;
+    }
+
+    .history-item {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      line-height: 1.6;
+    }
+
+    .highlight {
+      color: #004080;
+      font-weight: bold;
+    }
+
+    .no-data {
+      color: #888;
+      font-style: italic;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>My Airline</header>
+
+  <div class="nav-buttons">
+    <a href="{{ url_for('dashboard') }}">뒤로가기</a>
+  </div>
+
+  <div class="container">
+    <div class="history-box">
+        
+      <!-- 날짜 범위 + 조회 버튼 -->
+      <form method="GET" action="/get_my_history">
+        <div class="date-range">
+            <input type="date" name="start_date" required>
+            <span class="arrow">→</span>
+            <input type="date" name="end_date" required>
+            <button type="submit" style="
+              padding: 8px 16px;
+              background-color: #003366;
+              color: white;
+              border: none;
+              border-radius: 6px;
+              font-size: 14px;
+              cursor: pointer;
+            ">조회</button>
+        </div>
+        </form>
+
+      <!-- 예약 내역 -->
+      <h2>예약 내역</h2>
+      {% if reservations %}
+        {% for res in reservations %}
+          <div class="history-item">
+            <span class="highlight">{{ res.airline }}</span> | 
+            {{ res.departure }} → {{ res.arrival }} |
+            {{ res.flight_no }} |
+            {{ res.departure_time }} → {{ res.arrival_time }} |
+            결제 금액: {{ res.payment }} (천원) |
+            예약일: {{ res.reserved_date }}
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="no-data">예약 내역이 없습니다.</div>
+      {% endif %}
+
+      <!-- 취소 내역 -->
+      <h2>취소 내역</h2>
+      {% if cancellations %}
+        {% for can in cancellations %}
+          <div class="history-item">
+            <span class="highlight">{{ can.airline }}</span> | 
+            {{ can.departure }} → {{ can.arrival }} |
+            {{ can.flight_no }} |
+            {{ can.departure_time }} → {{ can.arrival_time }} |
+            환불 금액: {{ can.refund }} (천원) |
+            취소일: {{ can.cancelled_date }}
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="no-data">취소 내역이 없습니다.</div>
+      {% endif %}
+
+    </div>
+  </div>
+
+</body>
+</html>
